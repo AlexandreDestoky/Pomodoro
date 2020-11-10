@@ -8,19 +8,30 @@ let cycles = document.querySelector("#cycle");
 
 //Temps
 let checkInterval = false;
-let tempsTravail = 4;
-let tempsRepos = 3;
+let tempsTravail = 1500;
+let tempsRepos = 300;
 let pause = false;
 let nbrCycles = 0;
 cycles.innerText = nbrCycles;
 
-minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
-  tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
-}`;
-minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
-  tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
-}`;
+//FONCTIONs DE FORMATAGE
+let formatageTravail = () => {
+  minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
+    tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
+  }`;
+};
 
+let formatageRepos = () => {
+  minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
+    tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
+  }`;
+};
+
+//On appelle les fct de formatage au début pour avoir du contenu présent au début du lancement de l'app
+formatageTravail();
+formatageRepos();
+
+//Lancement de l'APP
 btnCommencer.addEventListener("click", () => {
   if (checkInterval == false) {
     //on change checkInteval pour ne pas pouvoir activer plusieurs fois l'interval
@@ -28,34 +39,24 @@ btnCommencer.addEventListener("click", () => {
 
     //On fait déjà une décrémentation pour ne pas attendre 1sec avant de commencer le timer
     tempsTravail--;
-    minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
-      tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
-    }`;
+    formatageTravail();
 
     let timerTravail = setInterval(() => {
       //on ne fait le décompte que si la pause n'est pas active
       if (pause == false) {
         if (tempsTravail > 0) {
           tempsTravail--;
-          minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
-            tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
-          }`;
+          formatageTravail();
         } else if (tempsRepos > 0) {
           tempsRepos--;
-          minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
-            tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
-          }`;
+          formatageRepos();
         } else {
           nbrCycles++;
           cycles.innerText = nbrCycles;
-          tempsTravail = 7;
-          tempsRepos = 6;
-          minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
-            tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
-          }`;
-          minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
-            tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
-          }`;
+          tempsTravail = 1500;
+          tempsRepos = 300;
+          formatageTravail();
+          formatageRepos();
           console.log("on monte le cycle");
         }
       }
@@ -65,14 +66,10 @@ btnCommencer.addEventListener("click", () => {
     btnReset.addEventListener("click", () => {
       clearInterval(timerTravail);
       checkInterval = false;
-      tempsTravail = 4;
-      tempsRepos = 5;
-      minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
-        tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
-      }`;
-      minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
-        tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
-      }`;
+      tempsTravail = 1500;
+      tempsRepos = 300;
+      formatageTravail();
+      formatageRepos();
       cycles.innerText = 0;
     });
   } else {
