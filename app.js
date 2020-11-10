@@ -1,17 +1,15 @@
 //DOM
-let minuteurTravail = document.querySelector(".tempsTravail"); //AffichageTravail
-let minuteurRepos = document.querySelector(".tempsRepos"); //AffichagePause
-let btnCommencer = document.querySelector(".commencer"); //btnGo
+let minuteurTravail = document.querySelector(".tempsTravail");
+let minuteurRepos = document.querySelector(".tempsRepos");
+let btnCommencer = document.querySelector(".commencer");
 let btnPause = document.querySelector(".pause");
 let btnReset = document.querySelector(".reset");
 let cycles = document.querySelector("#cycle");
+
 //Temps
-// let mTravail = 0;
-// let sTravail = 12;
-// let mRepos = 0;
-// let sRepos = 12;
-let tempsTravail = 1800;
-let tempsRepos = 300;
+let checkInterval = false;
+let tempsTravail = 4;
+let tempsRepos = 3;
 let pause = false;
 let nbrCycles = 0;
 cycles.innerText = nbrCycles;
@@ -23,44 +21,67 @@ minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
   tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
 }`;
 
-// btnCommencer.addEventListener("click", () => {
-//   let timerTravail = setInterval(decompteTravail, 1000);
-// });
+btnCommencer.addEventListener("click", () => {
+  if (checkInterval == false) {
+    //on change checkInteval pour ne pas pouvoir activer plusieurs fois l'interval
+    checkInterval = true;
 
-// let decompteTravail = () => {
-//   if (mTravail == 0 && sTravail == 0) {
-//     let timerRepos = setInterval(decompteRepos, 1000);
-//     clearInterval(timerTravail);
-//   } else {
-//     sTravail--;
-//     if (sTravail < 0) {
-//       sTravail = 59;
-//       mTravail--;
-//     }
+    //On fait déjà une décrémentation pour ne pas attendre 1sec avant de commencer le timer
+    tempsTravail--;
+    minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
+      tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
+    }`;
 
-//     if (sTravail < 10) {
-//       tempsTravail.innerText = mTravail + ":0" + sTravail;
-//     } else {
-//       tempsTravail.innerText = mTravail + ":" + sTravail;
-//     }
-//   }
-// };
+    let timerTravail = setInterval(() => {
+      //on ne fait le décompte que si la pause n'est pas active
+      if (pause == false) {
+        if (tempsTravail > 0) {
+          tempsTravail--;
+          minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
+            tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
+          }`;
+        } else if (tempsRepos > 0) {
+          tempsRepos--;
+          minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
+            tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
+          }`;
+        } else {
+          nbrCycles++;
+          cycles.innerText = nbrCycles;
+          tempsTravail = 7;
+          tempsRepos = 6;
+          minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
+            tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
+          }`;
+          minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
+            tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
+          }`;
+          console.log("on monte le cycle");
+        }
+      }
+    }, 1000);
 
-// let decompteRepos = () => {
-//   if (mRepos == 0 && sRepos == 0) {
-//     let timerTravail = setInterval(decompteTravail, 1000);
-//     clearInterval(timerRepos);
-//   } else {
-//     sRepos--;
-//     if (sRepos < 0) {
-//       sRepos = 59;
-//       mRepos--;
-//     }
+    //Reset
+    btnReset.addEventListener("click", () => {
+      clearInterval(timerTravail);
+      checkInterval = false;
+      tempsTravail = 4;
+      tempsRepos = 5;
+      minuteurTravail.innerText = `${Math.trunc(tempsTravail / 60)}:${
+        tempsTravail % 60 < 10 ? `0${tempsTravail % 60}` : tempsTravail % 60
+      }`;
+      minuteurRepos.innerText = `${Math.trunc(tempsRepos / 60)}:${
+        tempsRepos % 60 < 10 ? `0${tempsRepos % 60}` : tempsRepos % 60
+      }`;
+      cycles.innerText = 0;
+    });
+  } else {
+    return;
+  }
+});
 
-//     if (sRepos < 10) {
-//       tempsRepos.innerText = mRepos + ":0" + sRepos;
-//     } else {
-//       tempsRepos.innerText = mRepos + ":" + sRepos;
-//     }
-//   }
-// }
+//Play/Pause
+btnPause.addEventListener("click", () => {
+  pause = !pause;
+  btnPause.innerText = pause ? "Play" : "Pause";
+});
